@@ -1,93 +1,41 @@
 import os
 import psycopg2
-import sys
 
-print("=" * 60)
-print("🚀 نظام تخزين اسم عمار عساف - بدء التشغيل")
-print("=" * 60)
-print(f"🐍 إصدار Python: {sys.version}")
+print("🚀 بدء البرنامج...")
 
-def main():
-    try:
-        # الحصول على رابط قاعدة البيانات من Render
-        DATABASE_URL = os.getenv('DATABASE_URL')
-        
-        if not DATABASE_URL:
-            print("❌ خطأ: لم يتم العثور على رابط قاعدة البيانات")
-            print("🔍 فحص المتغيرات البيئية...")
-            for key in os.environ:
-                if 'DATABASE' in key or 'POSTGRES' in key:
-                    print(f"   {key}: {os.environ[key][:50]}...")
-            return
-        
-        print("✅ تم العثور على رابط قاعدة البيانات")
-        
-        # تحويل الرابط ليكون متوافقاً مع PostgreSQL
-        if DATABASE_URL.startswith('postgres://'):
-            DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
-        
-        # الاتصال بقاعدة البيانات
-        print("🔗 جارٍ الاتصال بقاعدة البيانات...")
-        connection = psycopg2.connect(DATABASE_URL, sslmode='require')
-        print("✅ تم الاتصال بقاعدة البيانات بنجاح!")
-        
-        # إنشاء مؤشر للتعامل مع قاعدة البيانات
-        cursor = connection.cursor()
-        
-        # إنشاء الجدول إذا لم يكن موجوداً
-        print("📊 جارٍ إنشاء الجدول...")
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS ammar_names (
-                id SERIAL PRIMARY KEY,
-                full_name VARCHAR(100) NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """)
-        connection.commit()
-        print("✅ تم إنشاء الجدول 'ammar_names' بنجاح!")
-        
-        # إدخال اسم "عمار عساف"
-        print("📝 جارٍ إدخال الاسم في قاعدة البيانات...")
-        cursor.execute("INSERT INTO ammar_names (full_name) VALUES (%s)", ("عمار عساف",))
-        connection.commit()
-        print("✅ تم إدخال الاسم 'عمار عساف' بنجاح!")
-        
-        # استعراض جميع الأسماء في الجدول
-        print("\n🔍 جارٍ استعراض البيانات...")
-        cursor.execute("SELECT * FROM ammar_names ORDER BY created_at DESC")
-        all_names = cursor.fetchall()
-        
-        print("\n" + "=" * 60)
-        print("📋 جميع الأسماء المخزنة في قاعدة البيانات:")
-        print("=" * 60)
-        
-        for name_record in all_names:
-            record_id = name_record[0]
-            name_value = name_record[1]
-            created_time = name_record[2]
-            print(f"🆔 الرقم: {record_id} | الاسم: {name_value} | الوقت: {created_time}")
-        
-        print("=" * 60)
-        
-        # عرض إحصائية
-        cursor.execute("SELECT COUNT(*) FROM ammar_names")
-        total_count = cursor.fetchone()[0]
-        print(f"\n📊 إجمالي عدد الأسماء المسجلة: {total_count}")
-        
-        # تنظيف الموارد
-        cursor.close()
-        connection.close()
-        
-        print("\n" + "🎉" * 20)
-        print("✅ تم تنفيذ البرنامج بنجاح!")
-        print("✅ تم تخزين اسم 'عمار عساف' في قاعدة البيانات!")
-        print("🎉" * 20)
-        
-    except Exception as error:
-        print(f"\n❌ حدث خطأ أثناء التنفيذ: {error}")
-        print("🔧 تفاصيل الخطأ:")
-        import traceback
-        traceback.print_exc()
-
-if __name__ == "__main__":
-    main()
+try:
+    DATABASE_URL = os.getenv('DATABASE_URL')
+    print("📊 تم الحصول على رابط قاعدة البيانات")
+    
+    if DATABASE_URL.startswith('postgres://'):
+        DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
+    
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    print("✅ تم الاتصال بقاعدة البيانات!")
+    
+    cur = conn.cursor()
+    
+    # إنشاء جدول
+    cur.execute("CREATE TABLE IF NOT EXISTS ammar_table (id SERIAL PRIMARY KEY, name TEXT)")
+    conn.commit()
+    print("✅ تم إنشاء الجدول!")
+    
+    # إدخال الاسم
+    cur.execute("INSERT INTO ammar_table (name) VALUES ('عمار عساف')")
+    conn.commit()
+    print("✅ تم إدخال 'عمار عساف'!")
+    
+    # عرض البيانات
+    cur.execute("SELECT * FROM ammar_table")
+    results = cur.fetchall()
+    
+    print("\n📋 النتائج:")
+    for row in results:
+        print(f"ID: {row[0]}, Name: {row[1]}")
+    
+    cur.close()
+    conn.close()
+    print("🎉 تم الانتهاء بنجاح!")
+    
+except Exception as e:
+    print(f"❌ خطأ: {e}")
