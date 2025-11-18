@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: ammar-final-solution
+    name: ammar-name-storage
     env: python
     plan: free
     buildCommand: "pip install -r requirements.txt"
