@@ -1,16 +1,13 @@
 services:
   - type: web
-    name: ammar-final-db
+    name: ammar-absolute-final
     env: python
     plan: free
+    pythonVersion: "3.11.0"
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "python main.py"
+    startCommand: "python app.py"
     envVars:
       - key: DATABASE_URL
-        fromDatabase:
-          name: ammar-database
-          property: connectionString
+        value: "postgresql://ammar_database_user:xawbhp3RsPkcRcOUmrDF9aHmjy9hdGYg@dpg-d4e63hmr433s738gpe70-a/ammar_database"  # استبدل بالرابط الفعلي
 
-databases:
-  - name: ammar-database
-    plan: free
+# لا تضيف قسم databases
