@@ -10,3 +10,7 @@ services:
         fromDatabase:
           name: ammar-database
           property: connectionString
+
+databases:
+  - name: ammar-final-database
+    plan: free
