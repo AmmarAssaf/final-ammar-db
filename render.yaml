@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: ammar-absolute-final
+    name: final-ammar-db
     env: python
     plan: free
     pythonVersion: "3.11.0"
