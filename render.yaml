@@ -3,6 +3,7 @@ services:
     name: ammar-name-storage
     env: python
     plan: free
+    pythonVersion: "3.11.0"
     buildCommand: "pip install -r requirements.txt"
     startCommand: "python app.py"
     envVars:
@@ -14,5 +15,3 @@ services:
 databases:
   - name: ammar-database
     plan: free
-    databaseName: ammar_storage
-    user: ammar_user
