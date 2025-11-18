@@ -12,5 +12,5 @@ services:
           property: connectionString
 
 databases:
-  - name: ammar-final-database
+  - name: ammar-database
     plan: free
